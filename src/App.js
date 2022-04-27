@@ -10,19 +10,16 @@ import {
   TextField,
   Autocomplete,
   Modal,
-  Box
+  Box,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { Add, Clear, Update } from "@mui/icons-material";
 
 var cities;
 
-if (
-  localStorage.getItem("cities") != undefined &&
-  localStorage.getItem("cities") != ""
-) {
+try {
   cities = new Map(Object.entries(JSON.parse(localStorage.getItem("cities"))));
-} else {
+} catch (e) {
   cities = new Map();
 
   cities.set("Kyiv", {
@@ -53,8 +50,8 @@ let handleKeyPress = (event, callback) => {
   }
 };
 
-const AddButton = (prop) => (
-  <IconButton onClick={prop.callback}>
+const AddButton = (props) => (
+  <IconButton data-testid={props.testid} onClick={props.callback}>
     <Add />
   </IconButton>
 );
@@ -226,17 +223,16 @@ function BasicModal(props) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             {props.current.name}
           </Typography>
-         
-            <ul>
-              {Object.entries(props.current).map((elm) => {
-                return (
-                  <li key={elm[0]}>
-                    <strong>{elm[0]}</strong>: {elm[1]}
-                  </li>
-                );
-              })}
-            </ul>
-         
+
+          <ul>
+            {Object.entries(props.current).map((elm) => {
+              return (
+                <li key={elm[0]}>
+                  <strong>{elm[0]}</strong>: {elm[1]}
+                </li>
+              );
+            })}
+          </ul>
         </Box>
       </Modal>
     </div>
@@ -291,6 +287,7 @@ function App() {
                   ...params.InputProps,
                   endAdornment: (
                     <AddButton
+                      testid="input-btn"
                       callback={() => {
                         addCity();
                         save();
