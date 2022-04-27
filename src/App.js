@@ -18,8 +18,8 @@ import { Add, Clear, Update } from "@mui/icons-material";
 var cities;
 
 if (
-  localStorage.getItem("cities") !== undefined &&
-  localStorage.getItem("cities").length > 0
+  localStorage.getItem("cities") != undefined &&
+  localStorage.getItem("cities") != ""
 ) {
   cities = new Map(Object.entries(JSON.parse(localStorage.getItem("cities"))));
 } else {
@@ -94,7 +94,15 @@ function loadWeather(callback) {
     )
       .then((response) => response.json())
       .then((data) => {
-        cities.set(elm.name, { ...elm, ...data.main, ...data.weather[0] });
+        let obj = {
+          ...elm,
+          ...data.main,
+          ...data.weather[0],
+          country: data.sys.country,
+        };
+        delete obj.id;
+        delete obj.icon;
+        cities.set(elm.name, obj);
       });
   });
 
